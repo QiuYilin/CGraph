@@ -1,0 +1,9 @@
+get_filename_component(CGraph_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET CGraph::CGraph)
+    include("${CGraph_CMAKE_DIR}/CGraphTargets.cmake")
+endif()
+
+set(CGraph_LIBRARIES CGraph::CGraph)

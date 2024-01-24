@@ -29,9 +29,72 @@ ELSEIF(WIN32)
     # 本工程也支持在windows平台上的mingw环境使用
 ENDIF()
 
-include_directories(${CGRAPH_PROJECT_ROOT_DIR}/src/)    # 直接加入"CGraph.h"文件对应的位置
+#include_directories(${CGRAPH_PROJECT_ROOT_DIR}/src/)    # 直接加入"CGraph.h"文件对应的位置
 
 # 以下三选一，本地编译执行，推荐OBJECT方式
-add_library(CGraph OBJECT ${CGRAPH_PROJECT_SRC_LIST})      # 通过代码编译
-# add_library(CGraph SHARED ${CGRAPH_PROJECT_SRC_LIST})    # 编译libCGraph动态库
+# add_library(CGraph OBJECT ${CGRAPH_PROJECT_SRC_LIST})      # 通过代码编译
+add_library(CGraph SHARED ${CGRAPH_PROJECT_SRC_LIST})    # 编译libCGraph动态库
 # add_library(CGraph STATIC ${CGRAPH_PROJECT_SRC_LIST})    # 编译libCGraph静态库
+
+target_include_directories(${CMAKE_PROJECT_NAME}
+  PUBLIC
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/>
+    $<BUILD_INTERFACE:${CGRAPH_PROJECT_ROOT_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  PRIVATE
+    $<BUILD_INTERFACE:${CGRAPH_PROJECT_ROOT_DIR}/src>
+)
+
+###############
+# For Windows export
+##
+include(GenerateExportHeader)
+generate_export_header (
+  ${CMAKE_PROJECT_NAME}
+  EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Export.h"
+)
+
+###############
+# Installation
+##
+
+include(GNUInstallDirs)
+
+install(TARGETS ${CMAKE_PROJECT_NAME}
+  EXPORT ${CMAKE_PROJECT_NAME}Targets
+
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(DIRECTORY ${CGRAPH_PROJECT_ROOT_DIR}/src/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+
+install(EXPORT ${CMAKE_PROJECT_NAME}Targets
+  FILE ${CMAKE_PROJECT_NAME}Targets.cmake
+  NAMESPACE ${CMAKE_PROJECT_NAME}::
+  DESTINATION share/CGraph
+)
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file( "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake" 
+  COMPATIBILITY SameMajorVersion 
+)
+
+configure_package_config_file(${CGRAPH_PROJECT_ROOT_DIR}/cmake/${CMAKE_PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION share/CGraph
+)
+
+install(FILES
+  ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
+  ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION share/CGraph
+)
+
+
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Export.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${project_name}
+)

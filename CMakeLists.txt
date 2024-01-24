@@ -12,9 +12,13 @@ cmake_minimum_required(VERSION 3.2.0)
 
 project(CGraph VERSION 2.5.4)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 # CGraph默认使用C++11版本，推荐使用C++17版本。暂不支持C++11以下版本
 set(CMAKE_CXX_STANDARD 11)
 
+set(CMAKE_DEBUG_POSTFIX "d")
+set(CMAKE_RELEASE_POSTFIX "")
 option(CGRAPH_BUILD_FUNCTIONAL_TESTS "Enables builds of functional tests" OFF)
 option(CGRAPH_BUILD_PERFORMANCE_TESTS "Enables builds of performance tests" OFF)
 
@@ -24,8 +28,8 @@ option(CGRAPH_BUILD_PERFORMANCE_TESTS "Enables builds of performance tests" OFF)
 # add CGraph environment info
 include(cmake/CGraph-env-include.cmake)
 
-add_subdirectory(./tutorial)
-add_subdirectory(./example)
+#add_subdirectory(./tutorial)
+#add_subdirectory(./example)
 
 # 功能测试相关内容
 if(CGRAPH_BUILD_FUNCTIONAL_TESTS)

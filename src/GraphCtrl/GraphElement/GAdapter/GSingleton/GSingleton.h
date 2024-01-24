@@ -10,43 +10,43 @@
 #define CGRAPH_GSINGLETON_H
 
 #include "../GAdapter.h"
+#include "CGraphExport.h"
 
 CGRAPH_NAMESPACE_BEGIN
 
-template<typename T>
+template <typename T>
 class GSingleton : public GAdapter {
-private:
-    explicit GSingleton();
+ private:
+  explicit GSingleton();
 
-    CStatus init() override;
-    CStatus run() override;
-    CStatus destroy() override;
+  CStatus init() override;
+  CStatus run() override;
+  CStatus destroy() override;
 
-    CStatus addElementInfo(const std::set<GElementPtr> &dependElements,
-                           const std::string &name,
-                           CSize loop) final;
+  CStatus addElementInfo(const std::set<GElementPtr> &dependElements,
+                         const std::string &name, CSize loop) final;
 
-    CStatus addManagers(GParamManagerPtr paramManager,
-                        GEventManagerPtr eventManager) final;
+  CStatus addManagers(GParamManagerPtr paramManager,
+                      GEventManagerPtr eventManager) final;
 
-    CBool isHold() final;
+  CBool isHold() final;
 
-    CBool isMatch() final;
+  CBool isMatch() final;
 
-    CBool isRegistered() const final;
+  CBool isRegistered() const final;
 
-private:
-    static USingleton<T> s_singleton_;                    // 单例
-    static std::atomic<CBool> s_is_init_;                 // 标志是否被初始化过
+ private:
+  static USingleton<T> CGRAPH_EXPORT s_singleton_;  // 单例
+  static std::atomic<CBool> CGRAPH_EXPORT s_is_init_;  // 标志是否被初始化过
 
-    friend class GPipeline;
+  friend class GPipeline;
 };
 
-template<typename T>
+template <typename T>
 using GSingletonPtr = GSingleton<T> *;
 
 CGRAPH_NAMESPACE_END
 
 #include "GSingleton.inl"
 
-#endif //CGRAPH_GSINGLETON_H
+#endif  // CGRAPH_GSINGLETON_H

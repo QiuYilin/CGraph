@@ -9,8 +9,9 @@
 #ifndef CGRAPH_GMESSAGEMANAGERSINGLETON_H
 #define CGRAPH_GMESSAGEMANAGERSINGLETON_H
 
-#include "GMessageObject.h"
+#include "CGraphExport.h"
 #include "GMessageManager.h"
+#include "GMessageObject.h"
 
 CGRAPH_NAMESPACE_BEGIN
 
@@ -25,7 +26,7 @@ public:
     }
 
 private:
-    static USingleton<GMessageManager<>, USingletonType::LAZY, false> singleton_;    // message管理类。注意：这个单例，是不需要被init()的
+    static USingleton<GMessageManager<>, USingletonType::LAZY, false> CGRAPH_EXPORT singleton_;    // message管理类。注意：这个单例，是不需要被init()的
 };
 
 CGRAPH_NAMESPACE_END
